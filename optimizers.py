@@ -15,6 +15,9 @@ class Optimizers:
         self.learning_rate = learning_rate
         self.momentum_coeff = momentum_coeff
         self.cache = [0] * num_weights
+        self.m = [0] * num_weights
+        self.v = [0] * num_weights
+        self.t = 1
 
         # STOCHASTIC GRADIENT DESCENT FUNCTION
         def sgd(self,weights,gradients):
@@ -68,5 +71,23 @@ class Optimizers:
                 updated_weights.append(weights)
 
             return updated_weights
+        
+        # ADAM FUNCTION
+        def adam(self, weights, gradients, beta1 = 0.9, beta2 = 0.999):
+
+            updated_weights = []
+
+            for i, (weights, gradients) in enumerate(zip(weights, gradients)):
+                self.m[i] = beta1 * self.m[i] + (1 - beta1) * gradients
+                self.v[i] = beta2 * self.v[i] + (1 - beta2) * gradients ** 2
+                m_corrected = self.m[i] / (1 - beta1 ** self.t)
+                v_corrected = self.v[i] / (1 - beta2 ** self.t)
+                weights += -self.learning_rate * m_corrected / (np.sqrt(v_corrected) + 1e-8)
+
+                updated_weights.append(weights)
+                self.t += 1
+
+            return updated_weights
+        
 
 
