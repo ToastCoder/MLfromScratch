@@ -55,5 +55,18 @@ class Optimizers:
                 updated_weights.append(weights)
             
             return updated_weights
-            
+        
+        # RMS PROP FUNCTION
+        def rmsprop(self, weights, gradients, decay_rate = 0.9):
+
+            updated_weights = []
+
+            for i,(weights, gradients) in enumerate(zip(weights, gradients)):
+                self.cache[i] = decay_rate * self.cache[i] + (1 - decay_rate) * gradients ** 2
+                weights += -self.learning_rate * gradients / (np.sqrt(self.cache[i])+1e-6)
+
+                updated_weights.append(weights)
+
+            return updated_weights
+
 
